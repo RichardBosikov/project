@@ -1,98 +1,64 @@
-import logo from './logo.svg';
-import './App.css';
-import { createElement } from 'react';
-
-// export function App() { // Декларативный стиль
-// 	const now = new Date().getFullYear(); // Декларативный стиль
-
-// 	return ( // Императивный стиль в строке img
-// 		<div className="App">
-// 			<header className="App-header">
-// 				<img src={logo} className="App-logo" alt="logo" />
-
-// 				<p>
-// 					Edit <code>src/App.js</code> and save to reload.
-// 				</p>
-// 				<a
-// 					className="App-link"
-// 					href="https://reactjs.org"
-// 					target="_blank"
-// 					rel="noopener noreferrer" // Декларативный стиль
-// 				>
-// 					Learn React
-// 				</a>
-// 				<p>&copy; {now}</p>
-// 			</header>
-// 		</div>
-// 	);
-// }
-
+import styles from './App.module.css';
+import React from 'react';
+import { useState } from 'react';
 
 export function App() {
-	const now = new Date().getFullYear();
+	const [value, setValue] = useState('');
+	const [error, setError] = useState('');
+	const isValueValid = value.length >= 3;
 
-	return createElement(
-		'div',
-		{ className: 'App' },
-		createElement(
-			'header',
-			{ className: 'App-header' },
-			createElement('img', { src: logo, className: 'App-logo', alt: 'logo' }),
-			createElement(
-				'p',
-				null,
-				'Edit ',
-				createElement('code', null, 'src/App.js'),
-				' and save to reload.',
-			),
-			createElement(
-				'a',
-				{
-					className: 'App-link',
-					href: 'https://reactjs.org',
-					target: '_blank',
-					rel: 'noopener noreferrer',
-				},
-				'Learn React',
-			),
-			createElement('p', null, '\u00A9 ', now),
-		),
+	const [list, setList] = useState([]);
+
+	const onInputButtonClick = () => {
+		const promptValue = prompt('Введите значение:');
+		if (promptValue.length < 3) {
+			setError('Минимальная длина строки - 3 символа.');
+		} else {
+			setValue(promptValue);
+			setError('');
+		}
+	};
+
+	const onAddButtonClick = () => {
+		if (value.trim() !== '') {
+			const id = Date.now();
+			const updatedList = [...list, { id, value }];
+			setList(updatedList);
+			setValue('');
+			setError('');
+		} else {
+			setError('Значение не может быть пустым');
+		}
+	};
+
+	return (
+		<div className={styles.app}>
+			<h1 className={styles['page-heading']}>Ввод значения</h1>
+			<p className={styles['no-margin-text']}>
+				Текущее значение <code>value</code>: "
+				<output className={styles['current-value']} disabled={!isValueValid}>
+					{value}
+				</output>
+				"
+			</p>
+			<div className={styles.error}>
+				{error !== '' && <div className="error">{error}</div>}
+			</div>
+			<div className={styles['buttons-container']}>
+				<button className={styles.button} onClick={onInputButtonClick}>
+					Ввести новое
+				</button>
+				<button className={styles.button} onClick={onAddButtonClick}>
+					Добавить в список
+				</button>
+			</div>
+			<div className={styles['list-container']}>
+				<h2 className={styles['list-heading']}>Список:</h2>
+				<p className={styles['no-margin-text']}>Нет добавленных элементов</p>
+				<ul className={styles.list}>
+					{list.map(item => (<li key={item.id} className={styles['list-item']}>{item.value}</li>))}
+				</ul>
+			</div>
+		</div>
 	);
 }
-
-
-// export default App;
-
-// export function App() {
-// 	const now = new Date().getFullYear();
-
-// 	const app = createElement('div')
-// 	app.classList.add('App')
-
-// 	const header = createElement('header')
-// 	header.classList.add('App-header')
-// 	app.append.add(header)
-
-// 	const img = createElement('img')
-// 	img.src = logo
-// 	img.classList.add('App-logo')
-// 	img.alt = 'logo'
-// 	header.append.add(img)
-
-// 	const p = createElement('p')
-// 	p.innerHTML = 'Edit <code>src/App.js</code> and save to reload.'
-// 	header.append.add(p)
-
-// 	const a = createElement('a')
-
-// // 				<a
-// // 					className="App-link"
-// // 					href="https://reactjs.org"
-// // 					target="_blank"
-// // 					rel="noopener noreferrer" // Декларативный стиль
-// // 				>
-// // 					Learn React
-// // 				</a>
-// // 				<p>&copy; {now}</p>
-
-// }
